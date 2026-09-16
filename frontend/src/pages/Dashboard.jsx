@@ -11,24 +11,36 @@ function Dashboard({ assets }) {
 
     return (
         <section id="dashboard">
-            <h1>Dashboard</h1>
-            <p className="page-description">
-                Monitor and manage your organization's IT assets.
-            </p>
+            <div className="dashboard-header">
+                <h1>Dashboard</h1>
+
+                <p className="page-description">
+                    Monitor and manage your organization's IT assets.
+                </p>
+            </div>
 
             <div className="stats">
                 <div className="stat-card">
-                    <h3>Total Assets</h3>
+                    <span className="stat-label">
+                        Total Assets
+                    </span>
+
                     <p>{totalAssets}</p>
                 </div>
 
                 <div className="stat-card">
-                    <h3>Assigned</h3>
+                    <span className="stat-label">
+                        Assigned
+                    </span>
+
                     <p>{assignedAssets}</p>
                 </div>
 
                 <div className="stat-card">
-                    <h3>Available</h3>
+                    <span className="stat-label">
+                        Available
+                    </span>
+
                     <p>{availableAssets}</p>
                 </div>
             </div>

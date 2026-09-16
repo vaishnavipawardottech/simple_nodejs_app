@@ -1,14 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function AssetForm({ onAdd }) {
-    const [formData, setFormData] = useState({
-        name: "",
-        type: "",
-        serial_number: "",
-        assigned_to: "",
-        status: "Available",
-        purchase_date: ""
-    });
+const emptyForm = {
+    name: "",
+    type: "",
+    serial_number: "",
+    assigned_to: "",
+    status: "Available",
+    purchase_date: ""
+};
+
+function AssetForm({ onAdd, onUpdate, editingAsset, onCancelEdit }) {
+    const [formData, setFormData] = useState(emptyForm);
+
+    useEffect(() => {
+        if (editingAsset) {
+            setFormData({
+                name: editingAsset.name || "",
+                type: editingAsset.type || "",
+                serial_number: editingAsset.serial_number || "",
+                assigned_to: editingAsset.assigned_to || "",
+                status: editingAsset.status || "Available",
+                purchase_date: editingAsset.purchase_date
+                    ? editingAsset.purchase_date.split("T")[0]
+                    : ""
+            });
+        } else {
+            setFormData(emptyForm);
+        }
+    }, [editingAsset]);
 
     const handleChange = (event) => {
         setFormData({
@@ -20,78 +39,144 @@ function AssetForm({ onAdd }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        await onAdd(formData);
+        if (editingAsset) {
+            await onUpdate(editingAsset.id, formData);
+        } else {
+            await onAdd(formData);
+        }
 
-        setFormData({
-            name: "",
-            type: "",
-            serial_number: "",
-            assigned_to: "",
-            status: "Available",
-            purchase_date: ""
-        });
+        setFormData(emptyForm);
+    };
+
+    const handleCancel = () => {
+        setFormData(emptyForm);
+        onCancelEdit();
     };
 
     return (
-        <section id="add-asset">
-            <h2>Add Asset</h2>
+        <section className="form-section">
+            <div className="form-header">
+                <div>
+                    <h2>
+                        {editingAsset ? "Edit Asset" : "Add Asset"}
+                    </h2>
 
-            <form onSubmit={handleSubmit} className="asset-form">
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Asset Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                />
+                    <p className="page-description">
+                        {editingAsset
+                            ? "Update the selected asset details."
+                            : "Register a new IT asset."}
+                    </p>
+                </div>
+            </div>
 
-                <input
-                    type="text"
-                    name="type"
-                    placeholder="Type"
-                    value={formData.type}
-                    onChange={handleChange}
-                    required
-                />
+            <form
+                onSubmit={handleSubmit}
+                className="asset-form"
+            >
+                <div className="form-group">
+                    <label>Asset Name</label>
 
-                <input
-                    type="text"
-                    name="serial_number"
-                    placeholder="Serial Number"
-                    value={formData.serial_number}
-                    onChange={handleChange}
-                    required
-                />
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="e.g. Dell Latitude 5440"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
 
-                <input
-                    type="text"
-                    name="assigned_to"
-                    placeholder="Assigned To"
-                    value={formData.assigned_to}
-                    onChange={handleChange}
-                />
+                <div className="form-group">
+                    <label>Type</label>
 
-                <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                >
-                    <option value="Available">Available</option>
-                    <option value="Assigned">Assigned</option>
-                    <option value="Maintenance">Maintenance</option>
-                </select>
+                    <input
+                        type="text"
+                        name="type"
+                        placeholder="e.g. Laptop"
+                        value={formData.type}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
 
-                <input
-                    type="date"
-                    name="purchase_date"
-                    value={formData.purchase_date}
-                    onChange={handleChange}
-                />
+                <div className="form-group">
+                    <label>Serial Number</label>
 
-                <button type="submit" className="primary-btn">
-                    Add Asset
-                </button>
+                    <input
+                        type="text"
+                        name="serial_number"
+                        placeholder="e.g. DL-001"
+                        value={formData.serial_number}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Assigned To</label>
+
+                    <input
+                        type="text"
+                        name="assigned_to"
+                        placeholder="e.g. Vaishnavi"
+                        value={formData.assigned_to}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Status</label>
+
+                    <select
+                        name="status"
+                        value={formData.status}
+                        onChange={handleChange}
+                    >
+                        <option value="Available">
+                            Available
+                        </option>
+
+                        <option value="Assigned">
+                            Assigned
+                        </option>
+
+                        <option value="Maintenance">
+                            Maintenance
+                        </option>
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label>Purchase Date</label>
+
+                    <input
+                        type="date"
+                        name="purchase_date"
+                        value={formData.purchase_date}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="form-actions">
+                    <button
+                        type="submit"
+                        className="primary-btn"
+                    >
+                        {editingAsset
+                            ? "Update Asset"
+                            : "Add Asset"}
+                    </button>
+
+                    {editingAsset && (
+                        <button
+                            type="button"
+                            className="secondary-btn"
+                            onClick={handleCancel}
+                        >
+                            Cancel
+                        </button>
+                    )}
+                </div>
             </form>
         </section>
     );

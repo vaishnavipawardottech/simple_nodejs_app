@@ -6,9 +6,9 @@ function Navbar() {
             </div>
 
             <div className="navbar-links">
-                <a href="#dashboard">Dashboard</a>
-                <a href="#assets">Assets</a>
-                <a href="#add-asset">Add Asset</a>
+                <a href="/">Dashboard</a>
+                {/* <a href="#assets">Assets</a>
+                <a href="#add-asset">Add Asset</a> */}
             </div>
         </nav>
     );

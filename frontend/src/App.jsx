@@ -8,12 +8,14 @@ import AssetForm from "./components/AssetForm";
 import {
     getAssets,
     createAsset,
+    updateAsset,
     deleteAsset
 } from "./services/assetService";
 
 function App() {
     const [assets, setAssets] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [editingAsset, setEditingAsset] = useState(null);
 
     const loadAssets = async () => {
         try {
@@ -40,6 +42,31 @@ function App() {
         }
     };
 
+    const handleEditAsset = (asset) => {
+        setEditingAsset(asset);
+
+        setTimeout(() => {
+            document
+                .getElementById("asset-form")
+                ?.scrollIntoView({
+                    behavior: "smooth"
+                });
+        }, 100);
+    };
+
+    const handleUpdateAsset = async (id, asset) => {
+        try {
+            await updateAsset(id, asset);
+
+            setEditingAsset(null);
+
+            await loadAssets();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to update asset");
+        }
+    };
+
     const handleDeleteAsset = async (id) => {
         const confirmed = window.confirm(
             "Are you sure you want to delete this asset?"
@@ -58,6 +85,10 @@ function App() {
         }
     };
 
+    const handleCancelEdit = () => {
+        setEditingAsset(null);
+    };
+
     return (
         <>
             <Navbar />
@@ -66,15 +97,25 @@ function App() {
                 <Dashboard assets={assets} />
 
                 {loading ? (
-                    <p>Loading assets...</p>
+                    <p className="loading">
+                        Loading assets...
+                    </p>
                 ) : (
                     <Assets
                         assets={assets}
                         onDelete={handleDeleteAsset}
+                        onEdit={handleEditAsset}
                     />
                 )}
 
-                <AssetForm onAdd={handleAddAsset} />
+                <div id="asset-form">
+                    <AssetForm
+                        onAdd={handleAddAsset}
+                        onUpdate={handleUpdateAsset}
+                        editingAsset={editingAsset}
+                        onCancelEdit={handleCancelEdit}
+                    />
+                </div>
             </main>
         </>
     );
