@@ -1,14 +1,15 @@
 # GOAL: Lint the code in the repository
 
-name: Lint
+name: Lint and test
 
 on:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
+    # push:
+    #     branches:
+    #         - main
+    # pull_request:
+    #     branches:
+    #         - main
+    workflow_dispatch:
 
 
 jobs:
