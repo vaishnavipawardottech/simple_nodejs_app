@@ -1,0 +1,68 @@
+services:
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.multistage
+    container_name: asset-tracker-frontend
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - asset-tracker-network
+
+  
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.multistage
+    container_name: asset-tracker-backend
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      DB_USER: ${POSTGRES_USER}
+      DB_HOST: postgres
+      DB_NAME: ${POSTGRES_DB}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_PORT: 5432
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - asset-tracker-network
+
+  
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: asset-tracker-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5430:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init/postgres:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - asset-tracker-network
+
+
+volumes:
+  postgres_data:
+  
+networks:
+  asset-tracker-network:
+    driver: bridge
