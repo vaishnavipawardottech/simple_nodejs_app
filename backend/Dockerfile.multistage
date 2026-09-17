@@ -1,0 +1,25 @@
+# Builder stage
+
+FROM dhi.io/node:22-alpine-dev AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+# Running stage
+
+FROM dhi.io/node:22-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app ./
+
+EXPOSE 5000
+
+CMD ["node", "src/server.js"]
