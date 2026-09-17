@@ -28,8 +28,22 @@ function App() {
         }
     };
 
+    // useEffect(() => {
+    //     loadAssets();
+    // }, []);
     useEffect(() => {
-        loadAssets();
+        const fetchAssets = async () => {
+            try {
+                const data = await getAssets();
+                setAssets(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAssets();
     }, []);
 
     const handleAddAsset = async (asset) => {

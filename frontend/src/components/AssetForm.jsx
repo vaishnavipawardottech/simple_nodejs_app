@@ -12,8 +12,26 @@ const emptyForm = {
 function AssetForm({ onAdd, onUpdate, editingAsset, onCancelEdit }) {
     const [formData, setFormData] = useState(emptyForm);
 
+    // useEffect(() => {
+    //     if (editingAsset) {
+    //         setFormData({
+    //             name: editingAsset.name || "",
+    //             type: editingAsset.type || "",
+    //             serial_number: editingAsset.serial_number || "",
+    //             assigned_to: editingAsset.assigned_to || "",
+    //             status: editingAsset.status || "Available",
+    //             purchase_date: editingAsset.purchase_date
+    //                 ? editingAsset.purchase_date.split("T")[0]
+    //                 : ""
+    //         });
+    //     } else {
+    //         setFormData(emptyForm);
+    //     }
+    // }, [editingAsset]);
+
     useEffect(() => {
         if (editingAsset) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setFormData({
                 name: editingAsset.name || "",
                 type: editingAsset.type || "",
