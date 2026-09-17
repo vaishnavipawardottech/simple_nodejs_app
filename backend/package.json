@@ -8,7 +8,8 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run"
   },
   "dependencies": {
     "cors": "^2.8.6",

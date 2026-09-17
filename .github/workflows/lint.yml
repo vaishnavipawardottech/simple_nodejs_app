@@ -33,6 +33,9 @@ jobs:
             - name: Run ESlint
               run: npm run lint
 
+            - name: run tests
+              run: npm run test
+
     backend-lint:
         runs-on: ubuntu-latest
         defaults:
@@ -53,4 +56,7 @@ jobs:
 
             - name: Run ESlint
               run: npm run lint
+
+            - name: run tests
+              run: npm run test
 
