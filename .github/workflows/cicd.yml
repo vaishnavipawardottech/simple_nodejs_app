@@ -1,6 +1,6 @@
-# GOAL: To run the continuous integration (CI) for this project
+# GOAL: cicd workflow
 
-name: CI
+name: CICD
 
 on:
     # push:
@@ -8,12 +8,16 @@ on:
     #         - main
     workflow_dispatch:
 
+
 jobs:
     code-lint-and-test:
         uses: ./.github/workflows/lint-and-test.yml
-
 
     build-and-push:
         secrets: inherit
         needs: code-lint-and-test
         uses: ./.github/workflows/docker.yml
+
+    deploy:
+        needs: [code-lint-and-test, build-and-push]
+        uses: ./.github/workflows/deploy.yml
