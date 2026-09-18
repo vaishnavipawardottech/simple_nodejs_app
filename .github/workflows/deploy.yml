@@ -20,6 +20,13 @@ jobs:
             #     username: ${{ vars.DOCKER_USERNAME }}
             #     password: ${{ secrets.DOCKER_TOKEN }}
 
+            - name: Login to dhi.io
+              uses: docker/login-action@v4
+              with:
+                registry: dhi.io
+                username: ${{ vars.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_TOKEN }}
+
             - name: Create environment file
               env:
                 POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
