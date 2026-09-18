@@ -20,12 +20,12 @@ jobs:
             #     username: ${{ vars.DOCKER_USERNAME }}
             #     password: ${{ secrets.DOCKER_TOKEN }}
 
-            - name: Login to dhi.io
-              uses: docker/login-action@v4
-              with:
-                registry: dhi.io
-                username: ${{ vars.DOCKER_USERNAME }}
-                password: ${{ secrets.DOCKER_TOKEN }}
+            # - name: Login to dhi.io
+            #   uses: docker/login-action@v4
+            #   with:
+            #     registry: dhi.io
+            #     username: ${{ vars.DOCKER_USERNAME }}
+            #     password: ${{ secrets.DOCKER_TOKEN }}
 
             - name: Create environment file
               env:
@@ -39,8 +39,8 @@ jobs:
                 POSTGRES_PASSWORD=$POSTGRES_PASSWORD
                 EOF
 
-            # - name: Pull Docker Images
-            #   run: docker compose pull
+            - name: Pull Docker Images
+              run: docker compose pull
 
             - name: Start Application
               run: docker compose up -d
