@@ -6,10 +6,15 @@ on:
     push:
         branches:
             - main
+    workflow_dispatch:
 
 jobs:
-    frontend:
+    build-and-push:
         runs-on: ubuntu-latest
+
+        strategy:
+          matrix:
+            project: [frontend, backend]
 
         steps:
             - name: Code Checkout
@@ -24,37 +29,14 @@ jobs:
                 username: ${{ vars.DOCKER_USERNAME }}
                 password: ${{ secrets.DOCKER_TOKEN }}
 
-            - name: Build and push frontend
+            - name: Build and push Docker image
               uses: docker/build-push-action@v7
               with:
-                context: ./frontend
-                file: ./frontend/Dockerfile.multistage
+                context: ./${{ matrix.project }}
+                file: ./${{ matrix.project }}/Dockerfile.multistage
                 push: true
                 tags: |
-                    "${{ vars.DOCKER_USERNAME }}/asset-tracker-frontend:multistage"
+                    "${{ vars.DOCKER_USERNAME }}/asset-tracker-${{ matrix.project }}:multistage"
 
 
-    backend:
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Code Checkout
-              uses: actions/checkout@v7
-
-            - name: Docker setup
-              uses: docker/setup-docker-action@v5
-
-            - name: Docker Login
-              uses: docker/login-action@v4
-              with:
-                username: ${{ vars.DOCKER_USERNAME }}
-                password: ${{ secrets.DOCKER_TOKEN }}
-
-            - name: Build and push backend
-              uses: docker/build-push-action@v7
-              with:
-                context: ./backend
-                file: ./backend/Dockerfile.multistage
-                push: true
-                tags: |
-                    "${{ vars.DOCKER_USERNAME }}/asset-tracker-backend:multistage"
+   
