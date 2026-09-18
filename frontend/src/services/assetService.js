@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/assets";
+const API_URL = "http://35.90.233.130:5000/api/assets";
 
 export const getAssets = async () => {
     const response = await fetch(API_URL);
