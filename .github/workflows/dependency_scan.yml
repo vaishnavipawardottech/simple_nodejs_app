@@ -1,0 +1,35 @@
+# GOAL: To scan the dependencies / libraries installed in the application
+# using built in -> npm audit to find the vulnerabilities in the dependencies
+
+name: Dependency Scan
+
+on:
+    workflow_call:
+
+jobs:
+    dependency-scan:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                project: [frontend, backend]
+        defaults:
+            run:
+                working-directory: ${{ matrix.project }}
+
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v7
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v7
+              with:
+                node-version: 22
+
+            - name: Install dependencies
+              run: npm ci
+            
+            - name: Dependency scan
+              run: npm audit --audit-level=high
+                
+            

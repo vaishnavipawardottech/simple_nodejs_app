@@ -22,6 +22,10 @@ jobs:
         needs: code-lint-and-test
         uses: ./.github/workflows/sonar-scan.yml
 
+    dependency-scan:
+        needs: sast-scan
+        uses: ./.github/workflows/dependency_scan.yml
+
     # build-and-push:
     #     secrets: inherit
     #     needs: code-lint-and-test
