@@ -1,0 +1,48 @@
+# GOAL: TO scan the images build by docker before pushing to the docker hub for vulnerabilities using trivy scanner
+
+name: Trivy Scan
+
+on:
+    workflow_call:
+
+jobs:
+    trivy-scan:
+        runs-on: ubuntu-latest
+
+        strategy:
+          matrix:
+            project: [frontend, backend]
+
+        steps:
+            - name: Code Checkout
+              uses: actions/checkout@v7
+
+            - name: Docker setup
+              uses: docker/setup-docker-action@v5
+
+            - name: Docker Login
+              uses: docker/login-action@v4
+              with:
+                username: ${{ vars.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_TOKEN }}
+
+            - name: Build Docker image
+              uses: docker/build-push-action@v7
+              with:
+                context: ./${{ matrix.project }}
+                file: ./${{ matrix.project }}/Dockerfile.multistage
+                push: false
+                tags: |
+                    "${{ vars.DOCKER_USERNAME }}/asset-tracker-${{ matrix.project }}:multistage"
+
+            - name: Trivy Scan
+              uses: aquasecurity/trivy-action@v0.36.0
+              with:
+                image-ref: "${{ vars.DOCKER_USERNAME }}/asset-tracker-${{ matrix.project }}:multistage"
+                format: 'table'
+                exit-code: '1'
+                ignore-unfixed: true
+                vuln-type: 'os,library'
+                severity: 'CRITICAL,HIGH'
+
+            
