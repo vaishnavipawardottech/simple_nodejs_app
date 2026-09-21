@@ -25,6 +25,12 @@ app.get("/health", (req, res) => {
   });
 });
 
+// checking secret scanning workflow
+DB_USER = "admin"
+DB_PASSWORD = "SuperSecretPassword123"
+
+console.log(`Database credentials: ${DB_USER}, ${DB_PASSWORD}`);
+
 app.use("/api/assets", assetRoutes);
 
 const PORT = process.env.PORT || 5000;

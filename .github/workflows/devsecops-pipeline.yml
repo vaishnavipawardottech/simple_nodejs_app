@@ -11,10 +11,10 @@ jobs:
 
     secret-scan:
         secrets: inherit
-        needs: code-lint-and-test
         uses: ./.github/workflows/secrets-scanning.yml
 
     code-lint-and-test:
+        needs: secret-scan
         uses: ./.github/workflows/lint-and-test.yml
 
     # build-and-push:
