@@ -1,0 +1,38 @@
+# Custom Gitleaks configuration
+title = "asset tracker Gitleaks Configuration"
+
+# 1. Extend the default Gitleaks ruleset (recommended)
+[extend]
+useDefault = true
+
+# 2. Add custom detection rules specific to your organization
+[[rules]]
+id = "internal-api-key"
+description = "Internal API Key"
+regex = '''(?i)INTERNAL_API_KEY\s*[=:]\s*['"]?([a-zA-Z0-9]{32,})['"]?'''
+secretGroup = 1
+tags = ["internal", "api", "security"]
+
+[[rules]]
+id = "custom-db-url"
+description = "Custom Database connection string"
+regex = '''(?i)db:\/\/user:[a-zA-Z0-9_-]+@.*'''
+tags = ["database", "infrastructure"]
+
+# 3. Ignore specific files, paths, or placeholders (Allowlist)
+[allowlist]
+description = "Global allowlist for false positives and test files"
+
+# Stop GitLeaks from scanning specific files or entire folders
+paths = [
+    '''(?i)/tests?/.*\.(py|go)$''',  # Ignore Python/Go test files
+    '''_test\.go$''',                # Ignore Go test files
+    '''\.env\.example$''',            # Ignore example env files
+    '''docs/.*\.md$'''                # Ignore documentation markdown files
+]
+
+# Stop GitLeaks from flagging specific dummy/rotated secret strings
+regexes = [
+    '''glpat-1234567890abcdefghij''',  # Dummy GitLab token example
+    '''PLACEHOLDER_TOKEN_[A-Z0-9]+'''   # Generic mock token pattern
+]
