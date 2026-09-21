@@ -25,11 +25,6 @@ app.get("/health", (req, res) => {
   });
 });
 
-// checking secret scanning workflow
-let DB_USER = "admin"
-let DB_PASSWORD = "SuperSecretPassword123"
-
-console.log(`Database credentials: ${DB_USER}, ${DB_PASSWORD}`);
 
 app.use("/api/assets", assetRoutes);
 
