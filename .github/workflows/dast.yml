@@ -20,7 +20,7 @@ jobs:
 
             - name: Wait for services to be healthy
               run: |
-                timeout 60s sh -c 'until curl -s http://${{ secrets.EC2_HOST }} > /dev/null; do sleep 2; done'
+                timeout 120s sh -c 'until curl -s http://${{ secrets.EC2_HOST }}:5173 > /dev/null; do sleep 2; done'
             
             
             # Scan the running application 
@@ -28,7 +28,7 @@ jobs:
               uses: zaproxy/action-baseline@v0.14.0
               with:
                 token: ${{ secrets.GITHUB_TOKEN }}
-                target: 'http://${{ secrets.EC2_HOST }}'
+                target: 'http://${{ secrets.EC2_HOST }}:5173'
                 fail_action: false
                 allow_issue_writing: false
 
