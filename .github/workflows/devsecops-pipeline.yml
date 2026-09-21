@@ -36,7 +36,12 @@ jobs:
         needs: build-and-scan
         uses: ./.github/workflows/docker_push.yml
 
-    # deploy:
-    #     secrets: inherit
-    #     needs: [code-lint-and-test, build-and-push]
-    #     uses: ./.github/workflows/deploy.yml
+    deploy:
+        secrets: inherit
+        needs: docker-push
+        uses: ./.github/workflows/deploy.yml
+
+    dast:
+        secrets: inherit
+        needs: deploy
+        uses: ./.github/workflows/dast_scan.yml
