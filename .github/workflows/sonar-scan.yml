@@ -1,0 +1,22 @@
+# GOAL: To Scan the static code for SAST(Static Application Security Testing) and code related issuesusing SonarQube
+
+name: sonarqube-scan
+
+on:
+    workflow_call:
+
+jobs:
+    sast-scan:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7
+              with:
+                fetch-depth: 0
+              
+            - name: SonarQube server Scan
+              uses: SonarSource/sonarqube-scan-action@v8.2.2
+              env:
+                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+

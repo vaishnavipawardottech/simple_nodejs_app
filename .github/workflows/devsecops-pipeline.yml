@@ -1,4 +1,4 @@
-# GOAL:
+# GOAL: provide security before test, lint and deployment left shift
 
 name: DevSecOps
 
@@ -16,6 +16,11 @@ jobs:
     code-lint-and-test:
         needs: secret-scan
         uses: ./.github/workflows/lint-and-test.yml
+
+    sast-scan:
+        secrets: inherit
+        needs: code-lint-and-test
+        uses: ./.github/workflows/sonar-scan.yml
 
     # build-and-push:
     #     secrets: inherit
